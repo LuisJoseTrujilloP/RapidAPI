@@ -13,6 +13,14 @@ const SongDetails = () => {
     console.log(songid)
     const { data: songData, isFetching: isFetchingSongDetails } = useGetSongDetailsQuery({ songid })
     const { data, isFetching: isFetchingRelatedSongs, error } = useGetSongRelatedQuery({ songid })
+    const handlePauseClick = () => {
+        dispatch(playPause(false));
+    };
+    
+    const handlePlayClick = (song, i) => {
+        dispatch(setActiveSong({ song, data, i }));
+        dispatch(playPause(true));
+    };
 
     if(isFetchingSongDetails || isFetchingRelatedSongs) return <Loader title="Searching song details"/>;
     if(error) return <Error />
