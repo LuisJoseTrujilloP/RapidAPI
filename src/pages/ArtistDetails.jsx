@@ -5,38 +5,26 @@ import { useGetArtistDetailsQuery } from '../redux/services/shazamCore';
 
 
 const ArtistDetails = () => {
-    const { songid } = useParams();
+    const { id: artistId } = useParams();
     const { activeSong, isPlaying } = useSelector((state) => state.player);
-    console.log(songid)
-    const { data: songData, isFetching: isFetchingArtistDetails } = useGetArtistDetailsQuery({ songid })
-    const handlePauseClick = () => {
-        dispatch(playPause(false));
-    };
-    
-    const handlePlayClick = (song, i) => {
-        dispatch(setActiveSong({ song, data, i }));
-        dispatch(playPause(true));
-    };
+    const { data: artistData, isFetching: isFetchingArtistDetails, error } = useGetArtistDetailsQuery(artistId);
 
-    if(isFetchingArtistDetails || isFetchingRelatedSongs) return <Loader title="Searching song details"/>;
+    if(isFetchingArtistDetails) return <Loader title="Loading artist details"/>;
+
     if(error) return <Error />
+
     return (
         <div className='flex flex-col'>
             {/* {artistId} */}
-            <DetailsHeader artistId="" songData={songData}/>
-            <div className="mb-10">
-                <h2 className='text-white text-3xl font-bold'>Lyrics:</h2>
-                <div className='mt-5'>
-                    {songData?.sections[1].type === 'LYRICS' ? songData.sections[1].text.map((line, i) => (
-                        <p className='text-gray-400 text-base my-1'>{line}</p>
-                    )) : <p className='text-gray-400 text-base my-1'>Sorry, no lyrics found!</p>}
-                    
-                </div>
-            </div>
+            <DetailsHeader 
+            artistId={artistId} 
+            artistData={artistData}
+            
+            />
+
             <RelatedSongs 
-                data={data}
-                isPlaying={isPlaying}
-                activeSong={activeSong}
+                data={Object.values(artistData?.songs)}
+                artistId={artistId}
                 handlePauseClick={handlePauseClick}
                 handlePlayClick={handlePlayClick}
             />
