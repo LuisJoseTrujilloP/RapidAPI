@@ -8,7 +8,7 @@ const ArtistDetails = () => {
     const { id: artistId } = useParams();
     const { activeSong, isPlaying } = useSelector((state) => state.player);
     const { data: artistData, isFetching: isFetchingArtistDetails, error } = useGetArtistDetailsQuery(artistId);
-
+            
     if(isFetchingArtistDetails) return <Loader title="Loading artist details"/>;
 
     if(error) return <Error />
@@ -25,8 +25,8 @@ const ArtistDetails = () => {
             <RelatedSongs 
                 data={Object.values(artistData?.songs)}
                 artistId={artistId}
-                handlePauseClick={handlePauseClick}
-                handlePlayClick={handlePlayClick}
+                isPlaying={isPlaying}
+                activeSong={activeSong}
             />
         </div>
     )    
